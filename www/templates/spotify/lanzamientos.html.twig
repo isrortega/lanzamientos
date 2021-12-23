@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<title>Lanzamientos | Spotify</title>
+
+    </head>
+    <body>
+        <h1>Lanzamientos | Spotify</h1>
+            {{ dump(albumns) }}
+
+        <ul>
+        {% for album in albumns %}
+            <li>
+                <ul>
+                    <li>{{ album.name }}</li>
+                    <li>{{ album.images[1].url }}</li>
+                    {% for artist in album.artists %}
+                        <ul>
+                            <li>{{ artist.name }} | {{ artist.id }}</li>
+                        </ul>
+                    {% endfor %}
+                </ul>
+            </li>
+
+        {% endfor %}
+        </ul>
+    </body>
+</html>

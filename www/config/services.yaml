@@ -23,3 +23,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Service\Spotify:
+        arguments:
+            $auth_url:      '%env(SP_AUTH_URL)%'
+            $api_url:       '%env(SP_API_URL)%'
+            $client_id:     '%env(SP_CLIENT_ID)%'
+            $client_secret: '%env(SP_CLIENT_SECRET)%'
