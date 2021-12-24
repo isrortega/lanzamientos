@@ -27,6 +27,7 @@ class SpotifyController extends AbstractController {
         return $this->render('spotify/lanzamientos.html.twig', [
             'albumns' => $new_releases->data->albums->items,
             'page' => $new_releases->page->number,
+            'more' => (!is_null($new_releases->data->albums->next)), // retorna true cuando hay más páginas
         ]);
     } // lanzamientos
 

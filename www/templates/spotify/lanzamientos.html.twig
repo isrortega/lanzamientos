@@ -49,7 +49,7 @@
                         </a>
                     </div>
                 {% endif %}
-                {% if albumns|length == 12 %}
+                {% if more %}
                     <div class="col-start-6 p-6 grid justify-items-end">
                         <a class="text-white bg-green-600 rounded-full px-3 py-1" href="{{ path('app_spotify_lanzamientos', {'p': page + 1}) }}" title="Ver lanzamientos anteriores">
                             Anteriores
