@@ -14,7 +14,8 @@
 
     <ul>
         {% if albumns is null %}
-            <p>Hubo un problema al consultar los nuevos lanzamientos en Spotify</p>
+            <p class="text-white font-bold text-2xl text-center pt-6 pb-3 text-green-600">Hubo un problema al consultar los nuevos lanzamientos en Spotify</p>
+            <p class="text-white text-2xl text-center text-red-700 pb-6">Por favor intente nuevamente, más tarde</p>
         {% else %}
             <div class="grid ">
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 m-3">
