@@ -19,7 +19,6 @@
 .phpunit.result.cache
 ###< phpunit/phpunit ###
 
-.env
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/
