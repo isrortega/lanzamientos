@@ -1,46 +1,58 @@
-<!doctype html>
-<html lang="es">
-	<head>
-		<meta charset="utf-8" />
-		<title>Artista | Spotify</title>
+{% extends "base.html.twig" %}
 
-    </head>
-    <body>
+{% block title %}{{ artist.name | default('Artista no encontrado') }} | Spotify{% endblock %}
+
+{% block body %}
         {% if artist is null %}
             <p>No fue posible obtener la información de este artista</p>
             {% if artist_error is not null %}
                 <p>{{ artist_error}}</p>
             {% endif %}
         {% else %}
-            <h1>{{ artist.name }}</h1>
-                <p>
-                    <img src="{{ artist.images[2].url }}" />
-                </p>
-                <a href="{{ artist.external_urls.spotify }}" target="_blank">Pagina del artista</a>
+                <div class="grid grid-cols-4 p-6">
+                    <div class="flex justify-end pr-6">
+                        <img class="rounded-full border-4 border-white border-solid " src="{{ artist.images[2].url }}" />
+                    </div>
+                    <div class="col-span-2 justify-start">
+                        <h1 class="text-white text-3xl font-bold">
+                            {{ artist.name }}
+                        </h1>
+                        <a class="text-blue-500" href="{{ artist.external_urls.spotify }}" target="_blank">
+                            Ir a la página del artista
+                        </a>
+                    </div>
+                </div>
 
             {% if top_tracks is null %}
                 <p>No fue posible obtener los top_tracks para este artista</p>
             {% else %}
-                <table>
-                    <theader>
-                        <tr>
-                            <th>Foto</th>
-                            <th>Album</th>
-                            <th>Canción</th>
-                        </tr>
-                    </theader>
-                    <tbody>
-                        {% for track in top_tracks %}
-                            <tr>
-                                <td><img src="{{ track.album.images[2].url }}" /></td>
-                                <td>{{ track.album.name }}</td>
-                                <td>{{ track.name }} </td>
+                <div class="grid gird-cols-12 mx-10">
+                    <table class="table-auto">
+                        <thead >
+                            <tr class="border-t border-b-2 border-white text-white text-left text-lg font-bold">
+                                <th>Foto</th>
+                                <th>Album</th>
+                                <th>Canción</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for track in top_tracks %}
+                                <tr class="border-t border-white text-white pt-2">
+                                    <td class=" pt-2 ">
+                                        <img class="rounded pb-8 pl-4" src="{{ track.album.images[2].url }}" />
+                                    </td>
+                                    <td class=" align-top pt-2">{{ track.album.name }}</td>
+                                    <td class=" align-top pt-2">{{ track.name }} </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             {% endif %}
         {% endif %}
-        <p><a href="{{ path('app_spotify_lanzamientos') }}">Volver al listado de lanzamientos</a></p>
-    </body>
-</html>
+        <div class="p-8">
+            <a class="text-white bg-green-600 rounded-full px-3 py-1" href="{{ path('app_spotify_lanzamientos', { p: page }) }}">
+                Volver al listado de lanzamientos
+            </a>
+        </div>
+{% endblock %}
