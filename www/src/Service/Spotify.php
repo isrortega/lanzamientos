@@ -160,8 +160,9 @@ class Spotify {
      *              la información de los últimos lanzamientos.
      *              Retorna null en caso de error de autenticación con la API
      */
-    public function getNewReleases(): ?object{
+    public function getNewReleases(int $page = null): ?object{
         $headers = $this->getHeaders();
+        $page = $this->getPageInfo($page);
         
         if(is_null($headers)){ // No obtuvo el token de autorización
             return null;
@@ -169,11 +170,29 @@ class Spotify {
 
         $response = $this->client->request(
                 'GET', 
-                $this->api_url . '/browse/new-releases?limit=10&offset=0',
+                $this->api_url . "/browse/new-releases?limit={$page->limit}&offset={$page->offset}",
                 ['headers' => $headers],
         );
-        return json_decode($response->getBody()->getContents());
+        return (object)[
+            'page' => $page,
+            'data' => json_decode($response->getBody()->getContents())
+        ];
     } // getNewReleases
+
+
+    private function getPageInfo(int $page = null): object{
+        $limit = 12; // De momento lo tengo fijo
+        if(is_null($page)){
+            $page = 1; // La página por defecto
+        }
+        $res = (object)[
+            'number' => $page,
+            'offset' => ($page-1) * $limit, // La página por la cantidad de items por página
+            'limit' => $limit,
+        ];
+
+        return $res;
+    } // getPageInfo
 
 
     /**
