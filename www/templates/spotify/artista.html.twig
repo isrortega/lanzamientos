@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<title>Artista | Spotify</title>
+
+    </head>
+    <body>
+        {% if artist is null %}
+            <p>No fue posible obtener la información de este artista</p>
+            {% if artist_error is not null %}
+                <p>{{ artist_error}}</p>
+            {% endif %}
+        {% else %}
+            <h1>{{ artist.name }}</h1>
+                <p>
+                    <img src="{{ artist.images[2].url }}" />
+                </p>
+                <a href="{{ artist.external_urls.spotify }}" target="_blank">Pagina del artista</a>
+
+            {% if top_tracks is null %}
+                <p>No fue posible obtener los top_tracks para este artista</p>
+            {% else %}
+                <table>
+                    <theader>
+                        <tr>
+                            <th>Foto</th>
+                            <th>Album</th>
+                            <th>Canción</th>
+                        </tr>
+                    </theader>
+                    <tbody>
+                        {% for track in top_tracks %}
+                            <tr>
+                                <td><img src="{{ track.album.images[2].url }}" /></td>
+                                <td>{{ track.album.name }}</td>
+                                <td>{{ track.name }} </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        {% endif %}
+        <p><a href="{{ path('app_spotify_lanzamientos') }}">Volver al listado de lanzamientos</a></p>
+    </body>
+</html>

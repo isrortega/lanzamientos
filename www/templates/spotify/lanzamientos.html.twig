@@ -2,28 +2,31 @@
 <html lang="es">
 	<head>
 		<meta charset="utf-8" />
-		<title>Lanzamientos | Spotify</title>
+		<title>Nuevos lanzamientos en Spotify</title>
 
     </head>
     <body>
-        <h1>Lanzamientos | Spotify</h1>
-            {{ dump(albumns) }}
+        <h1>Nuevos lanzamientos en Spotify</h1>
 
         <ul>
-        {% for album in albumns %}
-            <li>
-                <ul>
-                    <li>{{ album.name }}</li>
-                    <li>{{ album.images[1].url }}</li>
-                    {% for artist in album.artists %}
-                        <ul>
-                            <li>{{ artist.name }} | {{ artist.id }}</li>
-                        </ul>
-                    {% endfor %}
-                </ul>
-            </li>
+        {% if albumns is null %}
+            <p>Hubo un problema al consultar los nuevos lanzamientos en Spotify</p>
+        {% else %}
+            {% for album in albumns %}
+                <li>
+                    <ul>
+                        <li>{{ album.name }}</li>
+                        <li><img src="{{ album.images[1].url }}" /></li>
+                        {% for artist in album.artists %}
+                            <ul>
+                                <li><a href="{{ path('app_spotify_artista', {artist_id: artist.id}) }}" >{{ artist.name }}</a></li>
+                            </ul>
+                        {% endfor %}
+                    </ul>
+                </li>
 
-        {% endfor %}
+            {% endfor %}
+        {% endif %}
         </ul>
     </body>
 </html>

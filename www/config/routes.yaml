@@ -5,3 +5,7 @@
 app_spotify_lanzamientos:
     path: /lanzamientos
     controller: App\Controller\SpotifyController::lanzamientos
+
+app_spotify_artista:
+    path: /artista/{artist_id}
+    controller: App\Controller\SpotifyController::artista

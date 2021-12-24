@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class Spotify {
 
@@ -48,7 +49,7 @@ class Spotify {
         if($this->tokenIsExpired()){  // Si el token está vencido
             $this->requestToken(); // solicitamos un nuevo token
         }
-        // var_dump(['this->token',$this->token]);exit;
+
         if (!$this->tokenIsValid()){ // Si el token no es válido
             return null; // retornamos nulo
         }
@@ -68,7 +69,7 @@ class Spotify {
         }
 
         $token_expires = $this->token['timestamp'] + $this->token['expires_in'];
-        //var_dump(['token_expires', $token_expires, 'time' => time()]);exit;
+        
         if( $token_expires <= time()){
             return true;
         }
@@ -141,7 +142,7 @@ class Spotify {
         $auth_header = [];
         if($with_auth_token){ // Si lleva token de autorización
             $token = $this->getToken(); // Obetenemos el token
-            //var_dump(['token',$token]);exit;
+            
             if(is_null($token)){ // Si es nulo
                 return null; 
             }
@@ -159,9 +160,9 @@ class Spotify {
      *              la información de los últimos lanzamientos.
      *              Retorna null en caso de error de autenticación con la API
      */
-    public function getLanzamientos(): ?object{
+    public function getNewReleases(): ?object{
         $headers = $this->getHeaders();
-        // var_dump(['headers', $headers]);exit;
+        
         if(is_null($headers)){ // No obtuvo el token de autorización
             return null;
         }
@@ -169,11 +170,89 @@ class Spotify {
         $response = $this->client->request(
                 'GET', 
                 $this->api_url . '/browse/new-releases?limit=10&offset=0',
-                [
-                    'headers' => $headers
-                ]
+                ['headers' => $headers],
         );
         return json_decode($response->getBody()->getContents());
-    }
+    } // getNewReleases
+
+
+    /**
+     * Obtiene la información del artista desde la API de Spotify
+     * haciendo uso del id del artista de Spotity
+     *
+     * @param String|null $artist_id El id del artista
+     * @return object|null Retorna null cuando el $artist_id es nulo,
+     *              o cuando no pudo obtener los headers.  
+     *              Retorna un objeto error si el $artist_id no es válido.
+     *              Retorna un objeto con la información del artista
+     *              cuando logra obtener la infromación de la API
+     */
+    public function getArtistById(String $artist_id = null): ?object {
+        if(is_null($artist_id)){
+            return null;
+        }
+        
+        $headers = $this->getHeaders();
+        if ( is_null($headers)){ // No obtuvo el token de autorización
+                return null;
+        }
+
+        try {
+            $response = $this->client->request(
+                'GET',
+                $this->api_url . "/artists/{$artist_id}/",
+                ['headers' => $headers],
+            );
+            if($response->getStatusCode() == 200){ // si la respuesta fue exitosa
+                return json_decode($response->getBody()->getContents());
+            }
+        } catch (ClientException $e) {
+            if ($e->hasResponse()){
+                return json_decode($e->getResponse()->getBody()->getContents());
+            }
+        }
+
+        return null;
+    } // getArtistById
+
+
+    /**
+     * Obtiene la lista de los top_tracks del artista desde la API de Spotify
+     * haciendo uso del id del artista de Spotity
+     *
+     * @param String|null $artist_id El id del artista
+     * @return object|null Retorna null cuando el $artist_id es nulo,
+     *              o cuando no pudo obtener los headers.  
+     *              Retorna un objeto error si el $artist_id no es válido.
+     *              Retorna un objeto con la información del artista
+     *              cuando logra obtener la infromación de la API
+     */
+    public function getTopTracksByArtistId(String $artist_id = null): ?object {
+        if(is_null($artist_id)){
+            return null;
+        }
+
+        $headers = $this->getHeaders();
+        if ( is_null($headers)){ // No obtuvo el token de autorización
+                return null;
+        }
+
+        try {
+            $response = $this->client->request(
+                'GET',
+                $this->api_url . "/artists/{$artist_id}/top-tracks?market=co",
+                ['headers' => $headers],
+            );
+            if ($response->getStatusCode() == 200) { // si la respuesta fue exitosa
+                return json_decode($response->getBody()->getContents());
+            }
+        } catch (ClientException $e) {
+            if ($e->hasResponse()){
+                return json_decode($e->getResponse()->getBody()->getContents());
+            }
+        }
+
+        return null;
+    } // getArtigetTopTracksByArtistIdstaById
 
 } // Spotify
